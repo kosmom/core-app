@@ -2,6 +2,7 @@
     "name": "kosmom/core-app",
     "description": "The Core Framework skeleton application.",
     "keywords": ["framework", "core"],
+    "version": "3.5.0",
     "license": "MIT",
     "type": "project",
     "require": {
