@@ -1,5 +1,5 @@
 {
-    "name": "core/core",
+    "name": "kosmom/core-app",
     "description": "The Core Framework skeleton application.",
     "keywords": ["framework", "core"],
     "license": "MIT",
