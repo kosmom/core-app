@@ -1,0 +1,27 @@
+{
+    "name": "core/core",
+    "description": "The Core Framework skeleton application.",
+    "keywords": ["framework", "core"],
+    "license": "MIT",
+    "type": "project",
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+        }
+    },
+    "autoload-dev": {
+    },
+    "extra": {
+    },
+    "scripts": {
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "optimize-autoloader": true
+    }
+}

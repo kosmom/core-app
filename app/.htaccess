@@ -1,0 +1,12 @@
+<Files ~ "\.(php|phtml)$">
+	Order allow,deny
+	deny from all
+</Files>
+
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresDefault "access plus 1 day"
+<IfModule mod_headers.c>
+Header append Cache-Control "public"
+</IfModule>
+</IfModule>
