@@ -43,7 +43,7 @@ if (c\core::$env=='d'){
 		c\mvc::addJs('jquery');
 	} 
 }
-if (!c\core::$debug){
+if (!c\core::$bebug){
 	//logging errors at prod mode
 	set_error_handler('coreErrorHandler',E_ERROR);
 	set_exception_handler('coreExceptionHandler');
@@ -58,7 +58,7 @@ c\core::$data['include_dir']='models';
 
 c\mvc::init(__DIR__);
 
-do @include c\mvc::content(); while (c\mvc::check());
+do include c\mvc::content(); while (c\mvc::check());
 c\mvc::header();
 require c\mvc::viewPage(false);
 c\mvc::footer();

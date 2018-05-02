@@ -142,6 +142,21 @@ var core_data={},core_feedbacks={
         }
 	}
 };
+function core_ajax_process(data,object){
+	for (var key in data){
+		var item=data[key];
+		if (typeof(item)=='undefined')continue;
+		if (typeof(core_feedbacks[item._type])!='undefined'){
+			if (typeof(item._val)=='undefined'){
+				core_feedbacks[item._type](item,object);
+			}else{
+				core_feedbacks[item._type](item._val,object);
+			}
+		}else{
+			console.log('Action "'+item._type+'" not registered in system');
+		}
+	}
+}
 function core_ajax(act,array,object,loading,success_callback){
 	array=array||{};
 //	array['_ajax']=true;
@@ -153,22 +168,16 @@ function core_ajax(act,array,object,loading,success_callback){
 	if (loading)jQuery(object).addClass('loading');
 	jQuery.post(location.href,array).success(function(input){
 		try{
-			var data=JSON.parse(input);
-		}
-		catch(e){
-			alert('Ajax format error. No actions');
-			return;
-		}
-		for (var key in data){
-			var item=data[key];
-			if (typeof(item)=='undefined')continue;
-			if (typeof(core_feedbacks[item._type])!='undefined'){
-				core_feedbacks[item._type](item,object);
-			}else{
-				console.log('Action "'+item._type+'" not registered in system');
-			}
-		}
-		if (success_callback)success_callback();
+		var data=JSON.parse(input);
+	}catch(e){
+		alert('Ajax format error. No actions');
+		console.log(input);
+		console.log(e);
+		return;
+	}
+	core_ajax_process(data,object);
+	if (success_callback)success_callback();
+	
 	}).error(function(xjr,text,status){
 		console.log(xjr);	
 		alert('Request error '+text+' '+status);
