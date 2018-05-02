@@ -7,9 +7,10 @@
     "type": "project",
     "require": {
         "php": ">=5.3.0",
-		"kosmom/core": "^3.5"
+		"kosmom/core": "3.5.*"
     },
-	"minimum-stability": "stable",
+	"minimum-stability": "dev",
+	"prefer-stable": true,
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
