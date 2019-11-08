@@ -1,0 +1,81 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-6">
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb">
+				  <?$curdir='';foreach (explode('/',$src_dir) as $dir){
+	$curdir=trim($curdir.'/'.$dir,'/');?>
+				  <li class="breadcrumb-item" aria-current="page"><a href="<?=c\mvc::getUrl(__DIR__)?>?dir=<?=$curdir?>"><?=$dir?></a></li>
+<?}?>
+			  </ol>
+			</nav>
+		</div>
+		<div class="col-6">
+			<div class="pull-right">
+	<a class="btn btn-link btn-sm <?if ($_GET['sort']==''){?>active<?}?>" href="<?=c\input::getLink(['sort'=>''])?>">Алфавит</a>
+	<a class="btn btn-link btn-sm  <?if ($_GET['sort']=='date_change'){?>active<?}?>" href="<?=c\input::getLink(['sort'=>'date_change'])?>">Изменения</a>
+</div>
+<div class="clearfix"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-4">
+<ul>
+<?foreach ($out as $filename=>$filedata){?>
+	<li><a <?=$source_dir==$filedata['path']?'class="selected"':''?> href="<?=c\input::getLink(['dir'=>$filedata['path']])?>">
+		<?if ($filedata['has_subdir']){?>📁<?}?>
+		<?=$filename?> 
+		<?if ($filedata['atime']>time()-3600*24*3){?><span class="badge badge-secondary">!<?if ($filedata['atime']>time()-3600*24){?>!!<?}?></span><?}?>
+		</a></li>
+<?}?>
+</ul>
+		</div>
+		<div class="col-sm-8">
+			<?if ($contents){?>
+			<h2>Содержание</h2>
+			<?foreach ($contents as $filename=>$content_key){?>
+			<?if (sizeof($contents)>1){?><h3><?=$filenames[$filename]?></h3><?}?>
+			<?foreach ($content_key as $content){?>
+			<pre><?= htmlspecialchars($content)?></pre>
+			<?}?>
+			<?}?>
+			<?}?>
+			<?if ($exceptions){?>
+			<h2>Возможные ошибки</h2>
+			<?foreach ($exceptions as $filename=>$exception_key){?>
+			<?if (sizeof($exceptions)>1){?><h3><?=$filenames[$filename]?></h3><?}?>
+			<?foreach ($exception_key as $exception){?>
+			<pre><?= htmlspecialchars($exception)?></pre>
+			<?}?>
+			<?}?>
+			<?}?>
+			
+			<?foreach ($drafts as $draft_key){?>
+			<?foreach ($draft_key as $draft){?>
+			<div class="row">
+				<?if (isset($draft[0])){?>
+				<div class="col-4">
+					<?= htmlspecialchars($draft[0])?>
+				</div>
+				<div class="col-4">
+					<?=isset($draft[1])?htmlspecialchars($draft[1]):''?>
+				</div>
+				<div class="col-4">
+					<?=isset($draft[2])?htmlspecialchars($draft[2]):''?>
+				</div>
+				<?}else{?>
+				<div class="col-12">
+					<?=htmlspecialchars($draft)?>
+				</div>
+				<?}?>
+			</div>
+			<?}?>
+					
+					
+			<?}?>
+			<?if ($plugin_dir){
+				include $plugin_dir.'/doc.phtml';
+			}?>
+		</div>
+	</div>
+</div>

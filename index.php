@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start(); // if will be work with sessions
 
 date_default_timezone_set('Europe/Moscow');
 
@@ -13,7 +13,7 @@ if (file_exists('vendor/autoload.php'))require 'vendor/autoload.php';
 error_reporting(E_ALL);
 
 c\core::$charset=c\core::UTF8;
-c\core::$lang='ru';
+c\mvc::$bodyAttributes['lang']=c\core::$lang='ru';
 c\core::$env='d';
 c\core::$version='1';
 
@@ -22,32 +22,14 @@ c\core::$version='1';
 function coreErrorHandler($errno){
 	if ($errno<8)return;
 	print '<div class="error">Some errors. '.($_POST?'Do not close page to not loose data ':'').'Please wait several minutes and refresh page.</div>';
-	c\error::log('logs/errors-'.date('Y-m-d').'.log',date('d.m.Y H.i.s').': '.print_r(debug_backtrace(),true));
+	c\error::log('logs/errors-'.date('Y-m-d').'.log',date('d.m.Y H.i.s').': '.c\request::url().': '.print_r(debug_backtrace(),true));
 }
 function coreExceptionHandler($ex){
 		print '<div class="error">Some errors. '.($_POST?'Do not close page to not loose data ':'').'Please wait several minutes and refresh page.</div>';
-		c\error::log('logs/errors-'.date('Y-m-d').'.log',date('d.m.Y H:i:s').': '.$ex->getMessage().PHP_EOL.print_r(debug_backtrace(),true));
+	c\error::log('logs/errors-'.date('Y-m-d').'.log',date('d.m.Y H:i:s').': '.c\request::url().': '.$ex->getMessage().PHP_EOL.print_r(debug_backtrace(),true));
 }
 
-if (c\core::$env=='d'){
-	//enable debug mode
-	if (isset($_GET['debug']))$_SESSION['debug']=$_GET['debug'];
-	if (isset($_SESSION['debug']))c\core::$debug=$_SESSION['debug'];
-	
-	// live edit mode. run "php ws.php" on local server
-	if (c\core::$debug){
-		c\core::$version=time(); // clear static cache
-		c\mvc::addJsVar('core_debug_ws', 'ws://localhost:8889');
-		c\mvc::addJsVar('core_debug_ws_latency', 1000); // if remote server saver
-		c\mvc::addJs('js/core_ws.js');
-		c\mvc::addJs('jquery');
-	} 
-}
-if (!c\core::$debug){
-	//logging errors at prod mode
-	set_error_handler('coreErrorHandler',E_ERROR);
-	set_exception_handler('coreExceptionHandler');
-}
+if (file_exists('config/env.php'))include 'config/env.php';
 
 c\mvc::$js_dict['core_ajax']=array('url'=>'/js/core_ajax.jsgz','requires'=>'jquery');
 
