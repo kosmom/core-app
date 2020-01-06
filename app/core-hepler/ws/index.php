@@ -1,37 +1,11 @@
 <?php
-	/**
-	 * Core c\filedata::filelist function alias
-	 * Get full list in folder with mask
-	 * @param string $dir
-	 * @param string $mask
-	 * @return array
-	 */
-	function filelist($src_dir,$mask='*',$callback=null){
-		if (!is_dir($src_dir))return false;
-		$dir = opendir($src_dir);
-		$out=array();
-		while(false !== ( $file = readdir($dir)) ) {
-			if (( $file == '.' ) || ( $file == '..' ))continue;
-			if ( is_dir($src_dir . DIRECTORY_SEPARATOR . $file) ) {
-				$out+=filelist($src_dir . DIRECTORY_SEPARATOR . $file,$mask,$callback);
-			} else {
-				$out[$src_dir . DIRECTORY_SEPARATOR . $file]=is_callable($callback)?$callback($src_dir . DIRECTORY_SEPARATOR . $file,$file,$src_dir):true;
-			}
-		}
-		closedir($dir);
-		return $out;
-	}
-	
+error_reporting(E_ALL);
+set_time_limit(0);
 
-error_reporting(E_ALL); //Выводим все ошибки и предупреждения
-set_time_limit(0);	//Время выполнения скрипта ограничено 180 секундами
-//ob_implicit_flush();	//Включаем вывод без буферизации 
-
-//$starttime = round(microtime(true),2);
-
-echo "start
-";
+echo c\cli::COLOR_RED."start Websockets".c\cli::EOL.c\cli::COLOR_RESET;
 $socket = stream_socket_server("tcp://127.0.0.1:8889", $errno, $errstr);
+
+if (!c\core::$debug)echo c\cli::COLOR_YELLOW."Possible debug mode is off".c\cli::EOL.c\cli::COLOR_RESET;
 
 if (!$socket) {
 	echo "socket unavailable<br />";
@@ -40,15 +14,15 @@ if (!$socket) {
 
 $connects = array();
 $files=array();
-while (true) {
-    //формируем массив прослушиваемых сокетов:
+echo 'waiting for connects'.c\cli::EOL;
+while (1) {
     $read = $connects;
-    $read []= $socket;
+    $read[]= $socket;
     $write = $except = null;
 
-	//if ($connects){
+	if ($connects){
 		$lastfiles=$files;
-		$files = filelist('app','*',function($file){
+		$files = c\filedata::filelist(c\mvc::$appFolder,'',function($file){
 			return filemtime($file);
 		});
 		clearstatcache();
@@ -64,36 +38,34 @@ while (true) {
 				}
 			}
 		}
-		
-	//}
+	}
 	
     if (!stream_select($read, $write, $except, 0,500000))continue;
 
-    if (in_array($socket, $read)) {//есть новое соединение то обязательно делаем handshake
-        //принимаем новое соединение и производим рукопожатие:
+    if (in_array($socket, $read)) { //handshake
         if (($connect = stream_socket_accept($socket, -1)) && $info = handshake($connect)) {
 			echo "new connection ".$connect."\n";          
 			//echo "info<br />";     
 			//var_dump($info); 
 
-			$connects[] = $connect;//добавляем его в список необходимых для обработки
-            onOpen($connect, $info);//вызываем пользовательский сценарий
+			$connects[] = $connect;
+            onOpen($connect, $info);
         }
         unset($read[ array_search($socket, $read) ]);
     }
 
-    foreach($read as $connect) {//обрабатываем все соединения
+    foreach($read as $connect) {
         $data = fread($connect, 100000);
 
-        if (!$data) { //соединение было закрыто
+        if (!$data) {
 			echo "connection closed...\n";    
 			fclose($connect);
             unset($connects[ array_search($connect, $connects) ]);
-            onClose($connect);//вызываем пользовательский сценарий
+            onClose($connect);
             continue;
         }
 
-        onMessage($connect, $data);//вызываем пользовательский сценарий
+        onMessage($connect, $data);
     }
 
 //	if( ( round(microtime(true),2) - $starttime) > 100) { 
@@ -108,7 +80,7 @@ while (true) {
 fclose($socket);
 
 
-function handshake($connect) { //Функция рукопожатия
+function handshake($connect) {
     $info = array();
 
     $line = fgets($connect);
@@ -116,7 +88,6 @@ function handshake($connect) { //Функция рукопожатия
     $info['method'] = $header[0];
     @$info['uri'] = $header[1];
 
-    //считываем заголовки из соединения
     while ($line = rtrim(fgets($connect))) {
         if (preg_match('/\A(\S+): (.*)\z/', $line, $matches)) {
             $info[$matches[1]] = $matches[2];
@@ -125,7 +96,7 @@ function handshake($connect) { //Функция рукопожатия
         }
     }
 
-    $address = explode(':', stream_socket_get_name($connect, true)); //получаем адрес клиента
+    $address = explode(':', stream_socket_get_name($connect, true));
     $info['ip'] = $address[0];
     $info['port'] = $address[1];
 
@@ -133,7 +104,6 @@ function handshake($connect) { //Функция рукопожатия
         return false;
     }
 
-    //отправляем заголовок согласно протоколу вебсокета
     $SecWebSocketAccept = base64_encode(pack('H*', sha1($info['Sec-WebSocket-Key'] . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')));
     $upgrade = "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" .
         "Upgrade: websocket\r\n" .
@@ -304,11 +274,8 @@ function decode($data)
     return $decodedData;
 }
 
-//пользовательские сценарии:
-
 function onOpen($connect, $info) {
     echo "open OK\n";
-    //fwrite($connect, encode('Привет, мы соеденены'));
 }
 
 function onClose($connect) {
@@ -318,6 +285,4 @@ function onClose($connect) {
 function onMessage($connect, $data) {
     $f = decode($data);
 	echo "Message:".$f['payload'] . "\n";
-    //fwrite($connect, encode($f['payload']));
 }
-

@@ -5,7 +5,7 @@ if (c\core::$env=='d'){
 	if (isset($_GET['ws']))$_SESSION['ws']=$_GET['ws'];
 	if (isset($_SESSION['debug']))c\core::$debug=$_SESSION['debug'];
 	
-	// live edit mode. run "php ws.php" on local server
+	// live edit mode. run "php index.php app\core-helper\ws" on local server
 	if (c\core::$debug && $_SESSION['ws']){
 		c\core::$version=time(); // clear static cache
 		c\mvc::addJsVar('core_debug_ws', 'ws://localhost:8889');
