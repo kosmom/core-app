@@ -76,10 +76,10 @@ foreach ($filenames as $filename=>$filetitle){
 	if (!file_exists($basedir.$source_dir.'/'.$filename.'.php'))continue;
 	$tokens=token_get_all(file_get_contents($basedir.$source_dir.'/'.$filename.'.php'));
 	foreach ($tokens as $key=> $token){
-		if ($token[0]==377 or $token[0]==378){
+		if ($token[0]==T_COMMENT or $token[0]==T_DOC_COMMENT){
 			// comment
 			$contents[$filename][]=trim($token[1]);
-		}elseif ($token[0]==319 && $token[1]=='Exception'){
+		}elseif ($token[0]==T_STRING && $token[1]=='Exception'){
 			$exceptions[$filename][]=trim($tokens[$key+2][1]);
 		}else{
 			$drafts[$filename][]=$token;
