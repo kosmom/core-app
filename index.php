@@ -31,7 +31,7 @@ function coreExceptionHandler($ex){
 
 if (file_exists('config/env.php'))include 'config/env.php';
 
-c\mvc::$js_dict['core_ajax']=array('url'=>'/js/core_ajax.jsgz','requires'=>'jquery');
+c\mvc::$js_dict['core_ajax']=array('url'=>'/js/core_ajax.js');
 
 c\core::$data['include_dir']='models';
 
