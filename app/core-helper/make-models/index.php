@@ -6,7 +6,7 @@
  * - table names and column names with single quuantity
  * - related column names must contain table name related table and column. For example user.id <=> address.user_id
  * - use column comments
- * - write own code between  /* BEGIN CUSTOM CODE */' and /* END CUSTOM CODE */. Else it will be overwritten
+ * - write own code between  * BEGIN CUSTOM CODE * ' and * END CUSTOM CODE *. Else it will be overwritten
  */
 
 
@@ -208,6 +208,10 @@ class " . $table . '{
      * @return ' . $table . '
      */
    static function toObject(){}
+   /**
+     * @return ' . $table . '
+     */
+    static function findOrCreateStatic(){}
    /**
      * @return ' . $table . '
      */
