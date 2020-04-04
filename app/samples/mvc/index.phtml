@@ -1,0 +1,6 @@
+<p>Main mvc layout. menu example</p>
+<?php foreach (c\mvc::getMenu(__DIR__) as $menuItem) { ?>
+    <a href="<?= $menuItem->href ?>"><?= $menuItem->name ?></a>
+<?php } ?>
+
+<?php include c\mvc::viewPage() ?>

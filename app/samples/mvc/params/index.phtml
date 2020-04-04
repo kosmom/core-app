@@ -1,0 +1,8 @@
+<p>Params example</p>
+
+<p>Params as string: <code><?= $paramsAsString ?></code></p>
+<?php var_dump($paramsAsArray) ?>
+
+<a style="display:block" href="<?= c\mvc::getUrl(__DIR__) ?>/param1">/param1</a>
+<a style="display:block" href="<?= c\mvc::getUrl(__DIR__) ?>/param1/param2">/param1/param2</a>
+<a style="display:block" href="<?= c\mvc::getUrl(__DIR__) ?>/param1/param2?a=b">/param1/param2?a=b</a>

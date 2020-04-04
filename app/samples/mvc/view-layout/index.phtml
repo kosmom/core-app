@@ -1,0 +1,20 @@
+<p>View laout example</p>
+
+<?php foreach (c\mvc::getMenu(__DIR__) as $menuItem) { ?>
+    <a href="<?= $menuItem->href ?>"><?= $menuItem->name ?></a>
+<?php } ?>
+
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <?php include c\mvc::viewLayout('layout-left', __DIR__) ?>
+        </div>
+        <div class="col-6">
+            <?php include c\mvc::viewPage() ?>
+        </div>
+        <div class="col-3">
+            <?php include c\mvc::viewLayout('layout-right', __DIR__) ?>
+        </div>
+    </div>
+
+</div>
