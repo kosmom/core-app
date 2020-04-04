@@ -6,7 +6,7 @@
  * - table names and column names with single quuantity
  * - related column names must contain table name related table and column. For example user.id <=> address.user_id
  * - use column comments
- * - write own code between  * BEGIN CUSTOM CODE * ' and * END CUSTOM CODE *. Else it will be overwritten
+ * - write own code between `BEGIN CUSTOM CODE` and `END CUSTOM CODE` Else it will be overwritten
  */
 
 
@@ -41,9 +41,15 @@ foreach ($tablesData as $table => $tableData) {
             $relation = substr($column_key, 0, -3);
             if ($tablesData[$relation]['data']['id']) {
                 // relation found
-                $tablesData[$table]['relations_to_one'][$relation] = 'id';
+                $tablesData[$table]['relations_to_one'][$relation] = $relation;
                 $tablesData[$relation]['relations_to_many'][$table] = 'id';
             }
+		// partition match search
+		foreach ($tablesData as $table2 => $tableData2){
+			if (substr($relation,-strlen($table2)-1)=='_'.$table2){
+				$tablesData[$table]['relations_to_one'][$relation]=$table2;
+			}
+		}
         } elseif (in_array($column_key, ['position', 'weight', 'order'])) {
             $tablesData[$table]['order'][] = $column_key;
         }
@@ -110,13 +116,13 @@ class ' . $table . ' extends c\model{
             }
         }
 
-        foreach ($tableData['relations_to_one'] as $relation_table => $relation_field) {
+        foreach ($tableData['relations_to_one'] as $relation_name => $relation_table) {
             $content .= '	/**
 	 * 
 	 * @return ' . $relation_table . '
 	 */
-	function ' . getRelationName($relation_table) . '(){
-		return $this->relationToOne(\'' . $relation_table . '\', \'id\', \'' . $relation_table . '_id\');
+	function ' . getRelationName($relation_name) . '(){
+		return $this->relationToOne(\'' . $relation_table . '\', \'id\', \'' . $relation_name . '_id\');
 	}
 ';
         }
