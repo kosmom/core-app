@@ -110,7 +110,7 @@ class ' . $table . ' extends c\model{
 	 * @return array
 	 */
 	function ' . substr($column_key, 0, -5) . '(){
-		return $this->' . $column_key . '==\'\'?array():c\input::json_decode($this->' . $column_key . ');
+		return $this->' . $column_key . '==\'\'?array():c\input::jsonDecode($this->' . $column_key . ');
 	}
 ';
             }

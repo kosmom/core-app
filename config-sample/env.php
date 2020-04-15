@@ -11,7 +11,6 @@ if (c\core::$env=='d'){
 		c\mvc::addJsVar('core_debug_ws', 'ws://localhost:8889');
 		c\mvc::addJsVar('core_debug_ws_latency', 1000); // if remote server saver
 		c\mvc::addJs('js/core_ws.js');
-		c\mvc::addJs('jquery');
 	} 
 }
 if (!c\core::$debug){
