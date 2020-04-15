@@ -1,0 +1,16 @@
+<?php
+$up=function(){
+	$sql=<<<'SQL'
+alter table `tablename` add column columnName type not null unsigned default 0 comment "type 0-private 1-public"
+SQL;
+	c\db::e($sql);
+	//tableName::alter()->addColumn('columnName')->unsigned()->default(0)->notNull()->tinyint()->comment('type 0-private 1-public');
+	//db::table('tableName')->
+};
+$down=function(){
+	$sql=<<<'SQL'
+alter table `tablename` drop column columnName
+SQL;
+	c\db::e($sql);
+	//tableName::alter()->dropColumn('columnName');
+};

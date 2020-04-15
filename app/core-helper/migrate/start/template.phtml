@@ -1,0 +1,16 @@
+<?php
+$up=function(){
+	$sql="CREATE TABLE `migration` ( 
+	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT , 
+	`title` VARCHAR(256) NOT NULL , 
+	`date_migrate` DATETIME NOT NULL , 
+	`batch` INT UNSIGNED NOT NULL , 
+	PRIMARY KEY (`id`)) 
+	ENGINE = InnoDB 
+	COMMENT = 'core Миграции'";
+	c\db::e($sql);
+};
+$down=function(){
+	$sql='drop table `migration`';
+	c\db::e($sql);
+};
