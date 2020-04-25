@@ -129,7 +129,7 @@ class ' . $table . ' extends c\model{
         foreach ($tableData['relations_to_many'] as $relation_table => $relation_field) {
             $content .= '	/**
 	 * 
-	 * @return ' . $relation_table . '
+	 * @return ' . $relation_table . '|'. $relation_table . '[]
 	 */
 	function ' . many_form($relation_table) . '(){
 		return $this->relation(\'' . $relation_table . '\', \'' . $table . '_id\', \'id\');
