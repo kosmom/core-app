@@ -33,6 +33,10 @@ $tablesData = [];
 
 $sql = "show tables";
 foreach (c\db::ec($sql) as $table) {
+	if (is_callable(c\core::$data['db_describe_cache'])){
+		$cache_file=c\core::$data['db_describe_cache']($table,c\db::autodb(c\core::$data['db']),c\core::$data['db']);
+		if (file_exists($cache_file))unlink($cache_file);
+	}
     $tablesData[$table] = c\db::describeTable($table);
 }
 foreach ($tablesData as $table => $tableData) {
@@ -110,7 +114,7 @@ class ' . $table . ' extends c\model{
 	 * @return array
 	 */
 	function ' . substr($column_key, 0, -5) . '(){
-		return $this->' . $column_key . '==\'\'?array():c\input::jsonDecode($this->' . $column_key . ');
+		return $this->' . $column_key . '==\'\'?null:c\input::jsonDecode($this->' . $column_key . ');
 	}
 ';
             }
