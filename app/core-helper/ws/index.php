@@ -267,7 +267,7 @@ function decode($data)
         }
         $decodedData['payload'] = $unmaskedPayload;
     } else {
-        $payloadOffset = $payloadOffset - 4;
+        $payloadOffset -= 4;
         $decodedData['payload'] = substr($data, $payloadOffset);
     }
 
