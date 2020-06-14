@@ -1,13 +1,13 @@
 <div class="alert alert-warning"><b>Current time:</b> <?=date('d.m.Y H:i:s')?></div>
 <div class="alert alert-warning"><b>Cached minute time:</b> <?=date('d.m.Y H:i:s', $cachedTimer)?></div>
-<div class="alert alert-warning"><b>Cached Until day end time:</b> <?=date('d.m.Y H:i:s',$cachedTimerUntilDayEnd)?></div>
+<div class="alert alert-warning"><b>Cached Until day end time:</b> <?=date('d.m.Y H:i:s', $cachedTimerUntilDayEnd)?></div>
 
 <?=$clearTimerForm->render()?>
 
 <h2>Exists keys</h2>
 <ul>
-<?php foreach (c\cache::getList('core-sample-') as $element){?>
+<?php foreach (c\cache::getList('core-sample-') as $element) {?>
 	<li><?=$element?></li>
-<?php } ?>
+<?php }?>
 </ul>
 <?=$removeTimerForm->render()?>

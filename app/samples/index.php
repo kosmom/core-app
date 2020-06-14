@@ -1,9 +1,13 @@
 <?php
 //name: Samples
 
-if (c\core::$env==='p')die('not work in production mode');
+if (c\core::$env === 'p') {
+    die('not work in production mode');
+}
 
-if (!session_id())session_start();
+if (!session_id()) {
+    session_start();
+}
 
 c\mvc::layoutParentRemove();
 
