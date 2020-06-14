@@ -6,12 +6,22 @@ c\mvc::clearScriptsFull();
 c\mvc::$search_css_js=false;
 c\mvc::$search_config=false;
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header("Access-Control-Allow-Headers: X-Requested-With");
+header('Access-Control-Allow-Methods: DELETE, POST, GET, OPTIONS');
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+header('Content-Type: application/json');
 $result = ['code' => 0, 'message' => 'OK'];
 
-function apiErrorHandler(int $errno)
-{
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+	header('Access-Control-Allow-Origin: *');
+	header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
+	header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+	header('Access-Control-Max-Age: 1728000');
+	header('Content-Length: 0');
+	header('Content-Type: text/plain');
+	die();
+}
+
+function apiErrorHandler(int $errno){
     if ($errno < 8) return;
     c\error::log('logs/errors-' . date('Y-m-d') . '.log', date('d.m.Y H.i.s').': '.c\request::url());
     $result['message'] = 'runtime error';
