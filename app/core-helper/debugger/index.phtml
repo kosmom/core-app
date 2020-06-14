@@ -2,85 +2,89 @@
 	<div class="row">
 		<div class="col-sm-4">
 <ul>
-<?foreach ($log_files as $filename=>$basename){?>
-	<li><a <?=$current_file==$basename?'class="selected"':''?> href="<?=c\input::getLink(['file'=>$basename])?>">
+<?php foreach ($log_files as $filename=>$basename){?>
+	<li><a <?=isset($current_file) && $current_file==$basename?'class="selected"':''?> href="<?=c\input::getLink(['file'=>$basename])?>">
 		<?=$basename?> 
-		<?if (fileatime($filename)>time()-3600*24*3){?><span class="badge badge-secondary">!<?if (fileatime($filename)>time()-3600*24){?>!!<?}?></span><?}?>
+		<?php if (fileatime($filename)>time()-3600*24*3){?><span class="badge badge-secondary">!<?php if (fileatime($filename)>time()-3600*24){?>!!<?php }?></span><?php }?>
 		</a></li>
-<?}?>
+<?php }?>
 </ul>
 		</div>
 		<div class="col-sm-8">
-			<?foreach ($contents as $key=>$content){?>
-			<nav class="navbar navbar-light bg-light">
+			<?php if(isset($contents)) foreach ($contents as $key=>$content){?>
+			<nav class="navbar navbar-light <?if ($content['response_code']==200){?>bg-light<?}?>" <?php if ($content['response_code']!=200){?>style="background-color: #f8d7da;"<?php }?>>
   
   <div class="nav nav-tabs" role="tablist">
 	  <span class="navbar-text">
 					<?=$content['datetime']?>
 				</span> 
 	  <span class="navbar-text">
-					<?=$content['url']?>
+					<?=$content['server']['REQUEST_URI']?>
 				</span>
 	  <a class="nav-item nav-link active" id="nav-home-tab<?=$key?>" data-toggle="tab" href="#nav-home<?=$key?>" role="tab" aria-controls="nav-content<?=$key?>" aria-selected="true">home</a>
     <a class="nav-item nav-link" id="nav-included-files-tab<?=$key?>" data-toggle="tab" href="#nav-included-files<?=$key?>" role="tab" aria-controls="nav-included-files<?=$key?>" aria-selected="false">Included Files <span class="badge badge-secondary"><?=sizeof($content['included_files'])?></span> </a>
     <a class="nav-item nav-link" id="nav-server-tab<?=$key?>" data-toggle="tab" href="#nav-server<?=$key?>" role="tab" aria-controls="nav-server<?=$key?>" aria-selected="false">Server</a>
-    <a class="nav-item nav-link" id="nav-watch-tab<?=$key?>" data-toggle="tab" href="#nav-watch<?=$key?>" role="tab" aria-controls="nav-watch<?=$key?>" aria-selected="false">Watch</a>
+    <?php if (isset($content['watch'])){?><a class="nav-item nav-link" id="nav-watch-tab<?=$key?>" data-toggle="tab" href="#nav-watch<?=$key?>" role="tab" aria-controls="nav-watch<?=$key?>" aria-selected="false">Watch</a><?php }?>
     <a class="nav-item nav-link" id="nav-debug_buffer-tab<?=$key?>" data-toggle="tab" href="#nav-debug_buffer<?=$key?>" role="tab" aria-controls="nav-debug_buffer<?=$key?>" aria-selected="false">Debug Buffer <span class="badge badge-secondary"><?=sizeof($content['debug_buffer'])?></span> </a>
     <a class="nav-item nav-link" id="nav-request-tab<?=$key?>" data-toggle="tab" href="#nav-request<?=$key?>" role="tab" aria-controls="nav-request<?=$key?>" aria-selected="false">Request</a>
     <a class="nav-item nav-link" id="nav-meta-tab<?=$key?>" data-toggle="tab" href="#nav-meta<?=$key?>" role="tab" aria-controls="nav-meta<?=$key?>" aria-selected="false">Meta</a>
     <a class="nav-item nav-link" id="nav-mvc-tab<?=$key?>" data-toggle="tab" href="#nav-mvc<?=$key?>" role="tab" aria-controls="nav-mvc<?=$key?>" aria-selected="false">MVC</a>
+	<a class="nav-item nav-link" id="nav-exception-tab<?=$key?>" data-toggle="tab" href="#nav-exception<?=$key?>" role="tab" aria-controls="nav-exception<?=$key?>" aria-selected="false">Exception<?php if (isset($content['exception'])){?> <span class="badge badge-secondary"><?=sizeof($content['exception'])?></span><?php }?></a>
   </div>
 </nav>
 <div class="tab-content">
   <div class="tab-pane fade show active" id="nav-home<?=$key?>" role="tabpanel" aria-labelledby="nav-home-tab"></div>
-  <div class="tab-pane fade" id="nav-included-files<?=$key?>" role="tabpanel" aria-labelledby="nav-included-files-tab<?=$key?>"><pre><? var_dump($content['included_files'])?></pre></div>
-  <div class="tab-pane fade" id="nav-server<?=$key?>" role="tabpanel" aria-labelledby="nav-server-tab<?=$key?>"><pre><? var_dump($content['server'])?></pre></div>
-  <div class="tab-pane fade" id="nav-watch<?=$key?>" role="tabpanel" aria-labelledby="nav-watch-tab<?=$key?>"><pre><? var_dump($content['watch'])?></pre></div>
+  <div class="tab-pane fade" id="nav-included-files<?=$key?>" role="tabpanel" aria-labelledby="nav-included-files-tab<?=$key?>"><pre><?php var_dump($content['included_files'])?></pre></div>
+  <div class="tab-pane fade" id="nav-server<?=$key?>" role="tabpanel" aria-labelledby="nav-server-tab<?=$key?>"><pre><?php var_dump($content['server'])?></pre></div>
+  <?php if (isset($content['watch'])){?><div class="tab-pane fade" id="nav-watch<?=$key?>" role="tabpanel" aria-labelledby="nav-watch-tab<?=$key?>"><pre><?php var_dump($content['watch'])?></pre></div><?php }?>
   <div class="tab-pane fade" id="nav-debug_buffer<?=$key?>" role="tabpanel" aria-labelledby="nav-debug_buffer-tab<?=$key?>">
-<?foreach ($content['debug_buffer'] as $buffer){
+<?php foreach ($content['debug_buffer'] as $buffer){
 	switch ($buffer[0]){
 		case 'log':
 			?>
 	  <div class="header_<?=$buffer[2]?>"><?=$buffer[1]?></div>
-		  <?
+		  <?php
 		  break;
 		default: 
 			?>
-	  <pre><? var_dump($buffer)?></pre>
-	  <?
+	  <pre><?php var_dump($buffer)?></pre>
+	  <?php
 	}
 }
 ?>
 </div>
   <div class="tab-pane fade" id="nav-request<?=$key?>" role="tabpanel" aria-labelledby="nav-request-tab<?=$key?>">
-	  <h3>Code</h3><pre><? var_dump($content['response_code'])?></pre>
-	  <h3>header_list</h3><pre><? var_dump($content['header_list'])?></pre>
-	  <h3>GET</h3><pre><? var_dump($content['get'])?></pre>
-	  <h3>POST</h3><pre><? var_dump($content['post'])?></pre>
-	  <h3>Input</h3><pre><? var_dump($content['input'])?></pre>
-	  <h3>files</h3><pre><? var_dump($content['files'])?></pre>
-	  <h3>cookie</h3><pre><? var_dump($content['cookie'])?></pre>
-	  <h3>session</h3><pre><? var_dump($content['session'])?></pre>
+	  <h3>Code</h3><pre><?php var_dump($content['response_code'])?></pre>
+	  <h3>header_list</h3><pre><?php var_dump($content['header_list'])?></pre>
+	  <?php if (isset($content['get'])){?><h3>GET</h3><pre><?php var_dump($content['get'])?></pre><?php }?>
+	  <h3>POST</h3><pre><?php var_dump($content['post'])?></pre>
+	  <h3>Input</h3><pre><?php var_dump($content['input'])?></pre>
+	  <?php if (isset($content['files'])){?><h3>files</h3><pre><?php var_dump($content['files'])?></pre><?php }?>
+	  <?php if (isset($content['cookie'])){?><h3>cookie</h3><pre><?php var_dump($content['cookie'])?></pre><?php }?>
+	  <?php if (isset($content['session'])){?><h3>session</h3><pre><?php var_dump($content['session'])?></pre><?php }?>
   </div>
   <div class="tab-pane fade" id="nav-meta<?=$key?>" role="tabpanel" aria-labelledby="nav-meta-tab<?=$key?>">
-	 <br>date time: <? var_dump($content['datetime'])?>
-	 <br>url: <? var_dump($content['url'])?>
-	 <br>lang: <? var_dump($content['lang'])?>
-	 <br>debug: <? var_dump($content['debug'])?>
-	 <br>env: <? var_dump($content['env'])?>
-	 <br>version: <? var_dump($content['version'])?>
-	 <br>memory_peak_usage: <? var_dump($content['memory_peak_usage'])?>
-	 <br>memory_usage: <? var_dump($content['memory_usage'])?>
-	 <br>avg: <? var_dump($content['avg'])?>
+	 <br>date time: <?php var_dump($content['datetime'])?>
+	 <br>url: <?php var_dump($content['url'])?>
+	 <br>lang: <?php var_dump($content['lang'])?>
+	 <br>debug: <?php var_dump($content['debug'])?>
+	 <br>env: <?php var_dump($content['env'])?>
+	 <br>version: <?php var_dump($content['version'])?>
+	 <br>memory_peak_usage: <?php var_dump($content['memory_peak_usage'])?>
+	 <br>memory_usage: <?php var_dump($content['memory_usage'])?>
+	 <br>avg: <?php var_dump($content['avg'])?>
   </div>
   <div class="tab-pane fade" id="nav-mvc<?=$key?>" role="tabpanel" aria-labelledby="nav-mvc-tab<?=$key?>">
 	  <h3>Route</h3>
-	  <pre><? var_dump($content['route'])?></pre>
+	  <pre><?php var_dump($content['route'])?></pre>
 	  <h3>data</h3>
-	  <pre><? var_dump($content['data'])?></pre>
+	  <pre><?php var_dump($content['data'])?></pre>
+  </div>
+<div class="tab-pane fade" id="nav-exception<?=$key?>" role="tabpanel" aria-labelledby="nav-exception-tab<?=$key?>">
+	  <?php if (isset($content['exception'])){?><h3>Exception</h3><pre><?php var_dump($content['exception'])?></pre><?php }?>
   </div>
 </div>
-			<?}?>
+			<?php }?>
 		</div>
 	</div>
 </div>

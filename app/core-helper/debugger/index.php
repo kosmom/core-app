@@ -1,6 +1,6 @@
 <?php
 // Name: Code debugger panel
-// Version: 0.1
+// Version: 0.2
 
 
 c\mvc::$noBody=false;
@@ -12,9 +12,9 @@ $path='logs/debugger';
 $log_files=c\filedata::filelist($path,'',function($filename){
 	return basename($filename);
 });
-if ($_GET['file']){
-	$current_file=$_GET['file'];
-	for ($a=0;$a<10;$a++){
+$current_file=$_GET['file'];
+if ($_GET['file'] && file_exists($path.'/'.$current_file)){
+	for ($a=0;$a<100;$a++){
 		$contents[]= c\input::jsonDecode(c\filedata::readLastDataPart($path.'/'.$current_file));
 	}
 }
