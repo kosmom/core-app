@@ -261,7 +261,7 @@ class " . $table . '{
      */
     function firstOrCreate(){}
 	/**
-     * @return ' . $table . '_collection|' . $table . '[]
+     * @return ' . $table . '
      */
     function firstOrFail(){}
 	/**
