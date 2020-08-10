@@ -5,7 +5,7 @@
 <?php foreach ($log_files as $filename=>$basename){?>
 	<li><a <?=isset($current_file) && $current_file==$basename?'class="selected"':''?> href="<?=c\input::getLink(['file'=>$basename])?>">
 		<?=$basename?> 
-		<?php if (fileatime($filename)>time()-3600*24*3){?><span class="badge badge-secondary">!<?php if (fileatime($filename)>time()-3600*24){?>!!<?php }?></span><?php }?>
+		<?php if (filemtime($filename)>time()-3600*24*3){?><span class="badge badge-secondary">!<?php if (fileatime($filename)>time()-3600*24){?>!!<?php }?></span><?php }?>
 		</a></li>
 <?php }?>
 </ul>
@@ -45,7 +45,7 @@
 	  <div class="header_<?=$buffer[2]?>"><?=$buffer[1]?></div>
 		  <?php
 		  break;
-		default: 
+		default:
 			?>
 	  <pre><?php var_dump($buffer)?></pre>
 	  <?php
@@ -57,8 +57,14 @@
 	  <h3>Code</h3><pre><?php var_dump($content['response_code'])?></pre>
 	  <h3>header_list</h3><pre><?php var_dump($content['header_list'])?></pre>
 	  <?php if (isset($content['get'])){?><h3>GET</h3><pre><?php var_dump($content['get'])?></pre><?php }?>
-	  <h3>POST</h3><pre><?php var_dump($content['post'])?></pre>
-	  <h3>Input</h3><pre><?php var_dump($content['input'])?></pre>
+	  <?php if (isset($content['post'])) { ?>
+		<h3>POST</h3>
+        <pre><?php var_dump($content['post']) ?></pre>
+      <?php } ?>
+      <?php if (isset($content['input'])) { ?>
+        <h3>Input</h3>
+        <pre><?php var_dump($content['input']) ?></pre>
+      <?php } ?>
 	  <?php if (isset($content['files'])){?><h3>files</h3><pre><?php var_dump($content['files'])?></pre><?php }?>
 	  <?php if (isset($content['cookie'])){?><h3>cookie</h3><pre><?php var_dump($content['cookie'])?></pre><?php }?>
 	  <?php if (isset($content['session'])){?><h3>session</h3><pre><?php var_dump($content['session'])?></pre><?php }?>
@@ -85,6 +91,9 @@
   </div>
 </div>
 			<?php }?>
+			<?php if (ftell($handler)) { ?>
+				<a class="btn btn-primary btn-block" href="<?= c\input::getLink(['offset' => ftell($handler)]) ?>">Далее</a>
+			<?php } ?>
 		</div>
 	</div>
 </div>
