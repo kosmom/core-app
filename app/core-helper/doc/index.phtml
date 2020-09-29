@@ -12,8 +12,8 @@
 		</div>
 		<div class="col-6">
 			<div class="pull-right">
-	<a class="btn btn-link btn-sm <?php if ($_GET['sort']==''){?>active<?php }?>" href="<?=c\input::getLink(['sort'=>''])?>">Алфавит</a>
-	<a class="btn btn-link btn-sm <?php if ($_GET['sort']=='date_change'){?>active<?php }?>" href="<?=c\input::getLink(['sort'=>'date_change'])?>">Изменения</a>
+	<a class="btn btn-link btn-sm <?php if (@$_GET['sort']==''){?>active<?php }?>" href="<?=c\input::getLink(['sort'=>''])?>">Алфавит</a>
+	<a class="btn btn-link btn-sm <?php if (@$_GET['sort']=='date_change'){?>active<?php }?>" href="<?=c\input::getLink(['sort'=>'date_change'])?>">Изменения</a>
 </div>
 <div class="clearfix"></div>
 	</div>
