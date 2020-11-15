@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Make models automatickly by database tables
  * use rules for auto relations
@@ -10,7 +11,8 @@
  */
 
 
-function many_form($word){
+function many_form($word)
+{
     $x = substr($word, -1);
     if ($x == 's' or $x == 'z' or $x == 'x') return $word . 'es';
     $xx = substr($word, -2);
@@ -19,20 +21,26 @@ function many_form($word){
 }
 
 $types_mapping = array(
+    'float' => 'float',
+    'double' => 'float',
     'int' => 'int',
+    'bigint' => 'int',
+    'smallint' => 'int',
+    'timestamp' => 'int',
     'tinyint' => 'int',
     'varchar' => 'string',
     'char' => 'string',
+    'text' => 'string',
 );
 
 $tablesData = array();
 
 $sql = "show tables";
 foreach (c\db::ec($sql) as $table) {
-	if (is_callable(c\core::$data['db_describe_cache'])){
-		$cache_file=c\core::$data['db_describe_cache']($table,c\db::autodb(c\core::$data['db']),c\core::$data['db']);
-		if (file_exists($cache_file))unlink($cache_file);
-	}
+    if (is_callable(c\core::$data['db_describe_cache'])) {
+        $cache_file = c\core::$data['db_describe_cache']($table, c\db::autodb(c\core::$data['db']), c\core::$data['db']);
+        if (file_exists($cache_file)) unlink($cache_file);
+    }
     $tablesData[$table] = c\db::describeTable($table);
 }
 foreach ($tablesData as $table => $tableData) {
@@ -44,12 +52,12 @@ foreach ($tablesData as $table => $tableData) {
                 $tablesData[$table]['relations_to_one'][$relation] = $relation;
                 $tablesData[$relation]['relations_to_many'][$table] = 'id';
             }
-		// partition match search
-		foreach ($tablesData as $table2 => $tableData2){
-			if (substr($relation,-strlen($table2)-1)=='_'.$table2){
-				$tablesData[$table]['relations_to_one'][$relation]=$table2;
-			}
-		}
+            // partition match search
+            foreach ($tablesData as $table2 => $tableData2) {
+                if (substr($relation, -strlen($table2) - 1) == '_' . $table2) {
+                    $tablesData[$table]['relations_to_one'][$relation] = $table2;
+                }
+            }
         } elseif (in_array($column_key, ['position', 'weight', 'order'])) {
             $tablesData[$table]['order'][] = $column_key;
         }
@@ -57,7 +65,8 @@ foreach ($tablesData as $table => $tableData) {
 }
 print_r($tablesData);
 
-function getRelationName($relation){
+function getRelationName($relation)
+{
     if ($relation == 'order' or $relation == 'cursor') return $relation . '_relation';
     return $relation;
 }
@@ -75,9 +84,11 @@ foreach ($tablesData as $table => $tableData) {
         $begin = strpos($source_content, '/* BEGIN CUSTOM CODE */');
         $end = strpos($source_content, '/* END CUSTOM CODE */');
 
-        $custom = substr($source_content,
-		$begin + strlen('/* BEGIN CUSTOM CODE */' . PHP_EOL),
-        $end - $begin - 2 - strlen('/* END CUSTOM CODE */' . PHP_EOL));
+        $custom = substr(
+            $source_content,
+            $begin + strlen('/* BEGIN CUSTOM CODE */' . PHP_EOL),
+            $end - $begin - 2 - strlen('/* END CUSTOM CODE */' . PHP_EOL)
+        );
     }
     if ($begin && $end) {
         // generate model
@@ -128,7 +139,7 @@ class ' . $table . ' extends c\model{
         foreach ($tableData['relations_to_many'] as $relation_table => $relation_field) {
             $content .= '	/**
 	 * 
-	 * @return ' . $relation_table . '|'. $relation_table . '[]
+	 * @return ' . $relation_table . '|' . $relation_table . '[]
 	 */
 	function ' . many_form($relation_table) . '(){
 		return $this->relation(\'' . $relation_table . '\', \'' . $table . '_id\', \'id\');
@@ -168,10 +179,10 @@ class ' . $table . ' extends c\model{
         }
         $content .= '
 }';
-        if ($content != $source_content){
-			file_put_contents($modelFilename, $content);
-			echo "Model " . $table . ' created';
-		}
+        if ($content != $source_content) {
+            file_put_contents($modelFilename, $content);
+            echo "Model " . $table . ' created';
+        }
     }
     $modelFilename = c\core::$data['include_dir'] . '/hint/' . $table . '.php';
     $begin = true;
@@ -185,9 +196,11 @@ class ' . $table . ' extends c\model{
         $begin = strpos($source_content, '/* BEGIN CUSTOM CODE */');
         $end = strpos($source_content, '/* END CUSTOM CODE */');
 
-        $custom = substr($source_content, 
-		$begin + strlen('/* BEGIN CUSTOM CODE */' . PHP_EOL),
-        $end - $begin - 2 - strlen('/* END CUSTOM CODE */' . PHP_EOL));
+        $custom = substr(
+            $source_content,
+            $begin + strlen('/* BEGIN CUSTOM CODE */' . PHP_EOL),
+            $end - $begin - 2 - strlen('/* END CUSTOM CODE */' . PHP_EOL)
+        );
     }
     if ($begin && $end) {
         // generate hint model
@@ -196,11 +209,14 @@ class " . $table . '{
 
 /* BEGIN CUSTOM CODE */' . PHP_EOL . $custom . '/* END CUSTOM CODE */' . PHP_EOL;
         foreach ($tableData['data'] as $field_key => $field_val) {
-            $content .= '	/**
-' . (isset($field_val['comment']) ? '	 * ' . $field_val['comment'] : '') . '
-' . (isset($types_mapping[$field_val['type']]) ? '	 * @var ' . $types_mapping[$field_val['type']] : '') . '
-	 */
-	var $' . $field_key . ';
+            if (isset($field_val['comment']) || isset($types_mapping[$field_val['type']])) {
+                $content .= '	/**' . (isset($field_val['comment']) ? '
+  * ' . trim($field_val['comment']) : '') . (isset($types_mapping[$field_val['type']]) ? '
+  * @var ' . $types_mapping[$field_val['type']] : '') . '
+  */';
+            }
+            $content .= '
+  var $' . $field_key . ';
 
 ';
         }
@@ -276,6 +292,10 @@ class " . $table . '{
      * @return ' . $table . '_collection|' . $table . '[]
      */
     function whereIn(){}
+    /**
+     * @return ' . $table . '_collection|' . $table . '[]
+     */
+    static function whereInStatic(){}
 }
 class ' . $table . '_collection extends c\collection_object{
     /**
@@ -292,9 +312,9 @@ class ' . $table . '_collection extends c\collection_object{
     function current(){}
 }';
 
-        if ($content != $source_content){
-			file_put_contents($modelFilename, $content);
-			echo "Model hint " . $table . ' created';
-		}
+        if ($content != $source_content) {
+            file_put_contents($modelFilename, $content);
+            echo "Model hint " . $table . ' created';
+        }
     }
 }
