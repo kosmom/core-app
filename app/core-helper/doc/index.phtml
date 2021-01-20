@@ -2,80 +2,81 @@
 	<div class="row">
 		<div class="col-6">
 			<nav aria-label="breadcrumb">
-			  <ol class="breadcrumb">
-				  <?php $curdir='';foreach (explode('/',$src_dir) as $dir){
-	$curdir=trim($curdir.'/'.$dir,'/');?>
-				  <li class="breadcrumb-item" aria-current="page"><a href="<?=c\mvc::getUrl(__DIR__)?>?dir=<?=$curdir?>"><?=$dir?></a></li>
-<?php }?>
-			  </ol>
+				<ol class="breadcrumb">
+					<?php $curdir = '';
+					foreach (explode('/', $src_dir) as $dir) {
+						$curdir = trim($curdir . '/' . $dir, '/'); ?>
+						<li class="breadcrumb-item" aria-current="page"><a href="<?= c\mvc::getUrl(__DIR__) ?>?dir=<?= $curdir ?>"><?= $dir ?></a></li>
+					<?php } ?>
+				</ol>
 			</nav>
 		</div>
 		<div class="col-6">
 			<div class="pull-right">
-	<a class="btn btn-link btn-sm <?php if (@$_GET['sort']==''){?>active<?php }?>" href="<?=c\input::getLink(['sort'=>''])?>">Алфавит</a>
-	<a class="btn btn-link btn-sm <?php if (@$_GET['sort']=='date_change'){?>active<?php }?>" href="<?=c\input::getLink(['sort'=>'date_change'])?>">Изменения</a>
-</div>
-<div class="clearfix"></div>
-	</div>
+				<a class="btn btn-link btn-sm <?php if (@$_GET['sort'] == '') { ?>active<?php } ?>" href="<?= c\input::getLink(['sort' => '']) ?>">Алфавит</a>
+				<a class="btn btn-link btn-sm <?php if (@$_GET['sort'] == 'date_change') { ?>active<?php } ?>" href="<?= c\input::getLink(['sort' => 'date_change']) ?>">Изменения</a>
+			</div>
+			<div class="clearfix"></div>
+		</div>
 	</div>
 	<div class="row">
 		<div class="col-sm-4">
-<ul>
-<?php foreach ($out as $filename=>$filedata){?>
-	<li><a <?=$source_dir==$filedata['path']?'class="selected"':''?> href="<?=c\input::getLink(['dir'=>$filedata['path']])?>">
-		<?php if (isset($filedata['has_subdir'])){?>📁<?php }?>
-		<?=$filename?> 
-		<?php if (isset($filedata['atime']) && $filedata['atime']>time()-3600*24*3){?><span class="badge badge-secondary">!<?php if ($filedata['atime']>time()-3600*24){?>!!<?php }?></span><?php }?>
-		</a></li>
-<?php }?>
-</ul>
+			<ul>
+				<?php foreach ($out as $filename => $filedata) { ?>
+					<li><a <?= $source_dir == $filedata['path'] ? 'class="selected"' : '' ?> href="<?= c\input::getLink(['dir' => $filedata['path']]) ?>">
+							<?php if (isset($filedata['has_subdir'])) { ?>📁<?php } ?>
+							<?= $filename ?>
+							<?php if (isset($filedata['atime']) && $filedata['atime'] > time() - 3600 * 24 * 3) { ?><span class="badge badge-secondary">!<?php if ($filedata['atime'] > time() - 3600 * 24) { ?>!!<?php } ?></span><?php } ?>
+						</a></li>
+				<?php } ?>
+			</ul>
 		</div>
 		<div class="col-sm-8">
-			<?php if ($contents){?>
-			<h2>Содержание</h2>
-			<?php foreach ($contents as $filename=>$content_key){?>
-			<?php if (sizeof($contents)>1){?><h3><?=$filenames[$filename]?></h3><?php }?>
-			<?php foreach ($content_key as $content){?>
-			<pre><?= htmlspecialchars($content)?></pre>
-			<?php }?>
-			<?php }?>
-			<?php }?>
-			<?php if ($exceptions){?>
-			<h2>Возможные ошибки</h2>
-			<?php foreach ($exceptions as $filename=>$exception_key){?>
-			<?php if (sizeof($exceptions)>1){?><h3><?=$filenames[$filename]?></h3><?php }?>
-			<?php foreach ($exception_key as $exception){?>
-			<pre><?= htmlspecialchars($exception)?></pre>
-			<?php }?>
-			<?php }?>
-			<?php }?>
-			
-			<?php foreach ($drafts as $draft_key){?>
-			<?php foreach ($draft_key as $draft){?>
-			<div class="row">
-				<?php if (isset($draft[0])){?>
-				<div class="col-4">
-					<?= htmlspecialchars($draft[0])?>
-				</div>
-				<div class="col-4">
-					<?=isset($draft[1])?htmlspecialchars($draft[1]):''?>
-				</div>
-				<div class="col-4">
-					<?=isset($draft[2])?htmlspecialchars($draft[2]):''?>
-				</div>
-				<?php }else{?>
-				<div class="col-12">
-					<?=htmlspecialchars($draft)?>
-				</div>
-				<?php }?>
-			</div>
-			<?php }?>
-					
-					
-			<?php }?>
-			<?php if ($plugin_dir){
-				include $plugin_dir.'/doc.phtml';
-			}?>
+			<?php if ($contents) { ?>
+				<h2>Содержание</h2>
+				<?php foreach ($contents as $filename => $content_key) { ?>
+					<?php if (sizeof($contents) > 1) { ?><h3><?= $filenames[$filename] ?></h3><?php } ?>
+					<?php foreach ($content_key as $content) { ?>
+						<pre><?= htmlspecialchars($content) ?></pre>
+					<?php } ?>
+				<?php } ?>
+			<?php } ?>
+			<?php if ($exceptions) { ?>
+				<h2>Возможные ошибки</h2>
+				<?php foreach ($exceptions as $filename => $exception_key) { ?>
+					<?php if (sizeof($exceptions) > 1) { ?><h3><?= $filenames[$filename] ?></h3><?php } ?>
+					<?php foreach ($exception_key as $exception) { ?>
+						<pre><?= htmlspecialchars($exception) ?></pre>
+					<?php } ?>
+				<?php } ?>
+			<?php } ?>
+
+			<?php foreach ($drafts as $draft_key) { ?>
+				<?php foreach ($draft_key as $draft) { ?>
+					<div class="row">
+						<?php if (isset($draft[0])) { ?>
+							<div class="col-4">
+								<?= htmlspecialchars($draft[0]) ?>
+							</div>
+							<div class="col-4">
+								<?= isset($draft[1]) ? htmlspecialchars($draft[1]) : '' ?>
+							</div>
+							<div class="col-4">
+								<?= isset($draft[2]) ? htmlspecialchars($draft[2]) : '' ?>
+							</div>
+						<?php } else { ?>
+							<div class="col-12">
+								<?= htmlspecialchars($draft) ?>
+							</div>
+						<?php } ?>
+					</div>
+				<?php } ?>
+
+
+			<?php } ?>
+			<?php if ($plugin_dir) {
+				include $plugin_dir . '/doc.phtml';
+			} ?>
 		</div>
 	</div>
 </div>

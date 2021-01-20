@@ -1,66 +1,72 @@
 <?php
+//name: Live-edit (only cli mode)
+
+if (!c\request::isCmd()) {
+    return;
+}
+
 error_reporting(E_ALL);
 set_time_limit(0);
 
-echo c\cli::COLOR_RED."start Websockets".c\cli::EOL.c\cli::COLOR_RESET;
+echo c\cli::COLOR_RED . "start Websockets" . c\cli::EOL . c\cli::COLOR_RESET;
 $socket = stream_socket_server("tcp://127.0.0.1:8889", $errno, $errstr);
 
-if (!c\core::$debug)echo c\cli::COLOR_YELLOW."Possible debug mode is off".c\cli::EOL.c\cli::COLOR_RESET;
+if (!c\core::$debug) echo c\cli::COLOR_YELLOW . "Possible debug mode is off" . c\cli::EOL . c\cli::COLOR_RESET;
 
 if (!$socket) {
-	echo "socket unavailable<br />";
-    die($errstr. "(" .$errno. ")\n");
+    echo "socket unavailable<br />";
+    die($errstr . "(" . $errno . ")\n");
 }
 
 $connects = array();
-$files=array();
-echo 'waiting for connects'.c\cli::EOL;
+$files = array();
+echo 'waiting for connects' . c\cli::EOL;
 while (1) {
     $read = $connects;
-    $read[]= $socket;
+    $read[] = $socket;
     $write = $except = null;
 
-	if ($connects){
-		$lastfiles=$files;
-		$files = c\filedata::filelist(c\mvc::$appFolder,'',function($file){
-			return filemtime($file);
-		});
-		clearstatcache();
-		if ($lastfiles){
-			$diff=array_diff_assoc($files, $lastfiles);
-			if ($diff){
-				echo 'change
+    if ($connects) {
+        $lastfiles = $files;
+        $files = c\filedata::filelist(c\mvc::$appFolder, '', function ($file) {
+            return filemtime($file);
+        });
+        clearstatcache();
+        if ($lastfiles) {
+            $diff = array_diff_assoc($files, $lastfiles);
+            if ($diff) {
+                echo 'change
 ';
-				foreach ($connects as $con){
-					foreach ($diff as $key=>$f){
-						fwrite($con, encode(str_replace('\\', '/', $key)));
-					}
-				}
-			}
-		}
-	}
-	
-    if (!stream_select($read, $write, $except, 0,500000))continue;
+                foreach ($connects as $con) {
+                    foreach ($diff as $key => $f) {
+                        fwrite($con, encode(str_replace('\\', '/', $key)));
+                    }
+                }
+            }
+        }
+    }
+
+    if (!stream_select($read, $write, $except, 0, 500000)) continue;
 
     if (in_array($socket, $read)) { //handshake
         if (($connect = stream_socket_accept($socket, -1)) && $info = handshake($connect)) {
-			echo "new connection ".$connect."\n";          
-			//echo "info<br />";     
-			//var_dump($info); 
+            echo "new connection " . $connect . "\n";
+            //echo "info<br />";     
+            //var_dump($info); 
 
-			$connects[] = $connect;
+            $connects[] = $connect;
             onOpen($connect, $info);
         }
-        unset($read[ array_search($socket, $read) ]);
+        unset($read[array_search($socket, $read)]);
     }
 
-    foreach($read as $connect) {
+    foreach ($read as $connect) {
         $data = fread($connect, 100000);
 
         if (!$data) {
-			echo "connection closed...\n";    
-			fclose($connect);
-            unset($connects[ array_search($connect, $connects) ]);
+            echo "connection closed...\n";
+            fclose($connect);
+            unset($connects[array_search($connect, $connects)]);
             onClose($connect);
             continue;
         }
@@ -68,19 +74,20 @@ while (1) {
         onMessage($connect, $data);
     }
 
-//	if( ( round(microtime(true),2) - $starttime) > 100) { 
-//		echo "time = ".(round(microtime(true),2) - $starttime); 
-//		echo "exit <br />\r\n"; 
-//		fclose($socket);
-//		echo "connection closed OK<br />\r\n"; 
-//		exit();
-//	}
+    //	if( ( round(microtime(true),2) - $starttime) > 100) { 
+    //		echo "time = ".(round(microtime(true),2) - $starttime); 
+    //		echo "exit <br />\r\n"; 
+    //		fclose($socket);
+    //		echo "connection closed OK<br />\r\n"; 
+    //		exit();
+    //	}
 }
 
 fclose($socket);
 
 
-function handshake($connect) {
+function handshake($connect)
+{
     $info = array();
 
     $line = fgets($connect);
@@ -108,13 +115,13 @@ function handshake($connect) {
     $upgrade = "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" .
         "Upgrade: websocket\r\n" .
         "Connection: Upgrade\r\n" .
-        "Sec-WebSocket-Accept:".$SecWebSocketAccept."\r\n\r\n";
+        "Sec-WebSocket-Accept:" . $SecWebSocketAccept . "\r\n\r\n";
     fwrite($connect, $upgrade);
 
     return $info;
 }
 
-function encode($payload, $type = 'text', $masked = false) 
+function encode($payload, $type = 'text', $masked = false)
 {
     $frameHead = array();
     $payloadLength = strlen($payload);
@@ -202,7 +209,7 @@ function decode($data)
     }
 
     switch ($opcode) {
-        // text frame:
+            // text frame:
         case 1:
             $decodedData['type'] = 'text';
             break;
@@ -211,17 +218,17 @@ function decode($data)
             $decodedData['type'] = 'binary';
             break;
 
-        // connection close frame:
+            // connection close frame:
         case 8:
             $decodedData['type'] = 'close';
             break;
 
-        // ping frame:
+            // ping frame:
         case 9:
             $decodedData['type'] = 'ping';
             break;
 
-        // pong frame:
+            // pong frame:
         case 10:
             $decodedData['type'] = 'pong';
             break;
@@ -274,15 +281,18 @@ function decode($data)
     return $decodedData;
 }
 
-function onOpen($connect, $info) {
+function onOpen($connect, $info)
+{
     echo "open OK\n";
 }
 
-function onClose($connect) {
+function onClose($connect)
+{
     echo "close OK\n";
 }
 
-function onMessage($connect, $data) {
+function onMessage($connect, $data)
+{
     $f = decode($data);
-	echo "Message:".$f['payload'] . "\n";
+    echo "Message:" . $f['payload'] . "\n";
 }

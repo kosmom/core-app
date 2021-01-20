@@ -1,0 +1,7 @@
+<h1>Core helper</h1>
+<ul>
+        <?php foreach (c\mvc::getMenu($coreHelperDir) as $menu) { ?>
+                <li><a href="<?= $menu->link ?>">
+                                <?= $menu->name ?></a>
+                <?php } ?>
+</ul>

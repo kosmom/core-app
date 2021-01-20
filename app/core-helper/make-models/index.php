@@ -1,7 +1,8 @@
 <?php
+// name: Make models
 
 /**
- * Make models automatickly by database tables
+ * Make models automatically by database tables
  * use rules for auto relations
  * - id - primary key. always
  * - table names and column names with single quuantity
