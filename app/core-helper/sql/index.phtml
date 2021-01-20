@@ -1,0 +1,41 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2">
+            <?php if (sizeof($connections) == 1) { ?>
+                <div><?= $db ?></div>
+            <?php } else { ?>
+                <select onchange="location.href='<?= c\mvc::getUrl() ?>?db='+this.value">
+                    <option value=""></option>
+                    <?php foreach ($connections as $scheme_key => $scheme) { ?>
+                        <option <?= $db == $scheme_key ? 'selected' : '' ?> value="<?= c\input::htmlspecialchars($scheme_key) ?>"><?= $scheme_key ?></option>
+                    <?php } ?>
+                </select>
+            <?php } ?>
+            <?php if ($db) { ?>
+                <div class="list-group">
+                    <?php foreach ($tableList as $tableItem) { ?>
+                        <a href="<?= c\mvc::getUrl(__DIR__) ?><?= c\input::getLinkParams(['table' => $tableItem, 'db' => $db]) ?>" class="list-group-item list-group-item-action <?= $tableName == $tableItem ? 'active' : '' ?>">
+                            <?= $tableItem ?>
+                        </a>
+
+                    <?php } ?>
+                </div>
+            <?php } ?>
+        </div>
+        <div class="col-sm-10">
+            <?php if ($db) { ?>
+                <ul class="nav nav-tabs" role="tablist">
+                    <?php foreach (c\mvc::getMenu(__DIR__) as $menu) {
+                        if ($menu->need_table === "false" || $tableName) {
+                    ?>
+                            <li class="nav-item">
+                                <a class="nav-link <?= $menu->active ? 'active' : '' ?>" href="<?= $menu->link ?><?= c\input::getLinkParams(['sort' => false]) ?>"><?= $menu->name ?></a>
+                            </li>
+                    <?php }
+                    } ?>
+                </ul>
+                <?php include c\mvc::viewPage() ?>
+            <?php } ?>
+        </div>
+    </div>
+</div>
