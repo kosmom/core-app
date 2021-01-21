@@ -13,7 +13,7 @@ foreach (c\filedata::filelist('app') as $filename => $t) {
 	foreach ($token as $key => $value) {
 		if (is_string($value)) continue;
 		if ($key < 4) continue;
-		if ($value[1] == 't' && $value[0] == 319) {
+		if ($value[1] == 't' && $value[0] == T_STRING) {
 			if (
 				($token[$key - 1][1] == '::' && $token[$key - 2][1] == 'translate' && $token[$key - 3][1] == '\\' && $token[$key - 4][1] == 'c' && $token[$key + 1] == '(')
 				or
@@ -44,6 +44,6 @@ foreach ($phrases as $original => $translate) {
 	$content .= "translate::dictLP('" . $original . "','" . $translate . "');
 ";
 }
-file_put_contents('config/translate_core_make_' . $lang . '.php', $content);
+file_put_contents('config/translate_autogenerate_' . $lang . '.php', $content);
 var_dump($phrases);
 var_dump($phrases_warning);
