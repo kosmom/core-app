@@ -7,16 +7,18 @@ if (c\forms::isSubmit()) {
         try {
 
             if (isset($_POST['execute']) or isset($_POST['export'])) {
-                c\tables::$data = c\db::ea($data['sql'], [], $db);
+                c\tables::$data = c\db::ea($data['sql'], $_POST['binds'], $db);
                 if (c\tables::$data[0]) {
                     c\tables::$header = c\datawork::keysToKeyVals(c\tables::$data[0]);
                 }
                 if (isset($_POST['export'])) {
                     c\tables::writesheetXlsx();
                     c\xlsx::generateXlsx();
+                } else {
+                    c\mvc::addJsVarAsArray('binds', $_POST['binds']);
                 }
             } elseif (isset($_POST['explain'])) {
-                c\tables::$data = c\db::explain($data['sql'], [], $db);
+                c\tables::$data = c\db::explain($data['sql'], $_POST['binds'], $db);
                 c\tables::$header = c\datawork::valsToKeyVals([
                     'id',
                     'select_type',

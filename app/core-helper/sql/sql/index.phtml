@@ -1,3 +1,13 @@
-<?= c\forms::render() ?>
+<?= c\forms::renderBeginTag() ?>
+<?= c\forms::renderField('sql') ?>
+<div id="binds"></div>
+<div class="btn-group">
+    <?= c\forms::renderField('execute') ?>
+
+    <?= c\forms::renderField('explain') ?>
+
+    <?= c\forms::renderField('export') ?>
+</div>
+<?= c\forms::renderEndTag() ?>
 
 <?= c\tables::render() ?>
