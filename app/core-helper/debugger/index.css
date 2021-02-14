@@ -4,3 +4,6 @@
 .header_3,header_,header_4{
 	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
+.selected{
+	background-color: yellow;
+}

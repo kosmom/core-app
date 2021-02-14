@@ -1,0 +1,211 @@
+<?php if (isset($content) && $content) { ?>
+    <nav class="navbar navbar-light <?if ($content['response_code']==200){?>bg-light<?}?>" <?php if ($content['response_code'] != 200) { ?>style="background-color: #f8d7da;" <?php } ?>>
+        <span class="navbar-text">
+            <?= $content['datetime'] ?>
+        </span>
+        <span class="navbar-text">
+            <?= isset($content['server']['REQUEST_URI']) ? $content['server']['REQUEST_URI'] : 'none' ?>
+        </span>
+        <a class="nav-item nav-link" href="javascript:;" onclick="if (confirm('resend request?'))core_ajax('repeat_request',{offset: <?= $content['offset'] ?>})">Resend request</a>
+    </nav>
+
+
+    <div class="accordion" id="accordion">
+
+        <div class="card">
+            <div class="card-header" id="heading_included_files">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse_included_files" aria-controls="collapse_included_files">
+                        Included Files <span class="badge badge-secondary"><?= sizeof($content['included_files']) ?></span>
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse_included_files" class="collapse" aria-labelledby="heading_included_files" data-parent="#accordion">
+                <div class="card-body">
+                    <pre><?php var_dump($content['included_files']) ?></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" id="heading_server">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse_server" aria-controls="collapse_server">
+                        Server
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse_server" class="collapse" aria-labelledby="heading_server" data-parent="#accordion">
+                <div class="card-body">
+                    <pre><?php var_dump($content['server']) ?></pre>
+                </div>
+            </div>
+        </div>
+
+        <?php if (isset($content['watch'])) { ?>
+            <div class="card">
+                <div class="card-header" id="heading_server">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse_server" aria-controls="collapse_server">
+                            Watch
+                        </button>
+                    </h2>
+                </div>
+                <div id="collapse_server" class="collapse" aria-labelledby="heading_server" data-parent="#accordion">
+                    <div class="card-body">
+                        <pre><?php var_dump($content['watch']) ?></pre>
+                    </div>
+                </div>
+            </div>
+
+        <?php } ?>
+        <div class="card">
+            <div class="card-header" id="heading_debug_buffer">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse_debug_buffer" aria-controls="collapse_debug_buffer">
+                        Debug Buffer <span class="badge badge-secondary"><?= sizeof($content['debug_buffer']) ?></span>
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse_debug_buffer" class="collapse" aria-labelledby="heading_debug_buffer" data-parent="#accordion">
+                <div class="card-body">
+                    <?php
+                    $groups = 0;
+                    foreach ($content['debug_buffer'] as $buffer) {
+                        switch ($buffer[0]) {
+                            case 'log':
+                    ?>
+                                <div class="header_<?= $buffer[2] ?>"><?= $buffer[1] ?></div>
+                            <?php
+                                break;
+                            case 'group':
+                                $groups++;
+                            ?>
+                                <div class="card">
+                                    <div class="card-header header_<?= $buffer[2] ?>"><?= $buffer[1] ?></div>
+                                    <div class="card-body">
+                                        <?php
+                                        break;
+                                    case 'groupEnd':
+                                        if ($groups > 0) {
+                                            $groups--;
+                                        ?></div>
+                                </div><?php
+                                        }
+                                        break;
+                                    default:
+                                        ?>
+                            <pre><?php var_dump($buffer) ?></pre>
+                    <?php
+                                }
+                            }
+                            while ($groups > 0) {
+                                $groups--;
+                    ?>
+                </div>
+            </div><?php
+                            }
+                    ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" id="heading_request">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse_request" aria-controls="collapse_request">
+                        Request
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse_request" class="collapse" aria-labelledby="heading_request" data-parent="#accordion">
+                <div class="card-body">
+                    <h3>Code</h3>
+                    <pre><?php var_dump($content['response_code']) ?></pre>
+                    <h3>header_list</h3>
+                    <pre><?php var_dump($content['header_list']) ?></pre>
+                    <?php if (isset($content['get'])) { ?><h3>GET</h3>
+                        <pre><?php var_dump($content['get']) ?></pre><?php } ?>
+                    <?php if (isset($content['post'])) { ?>
+                        <h3>POST</h3>
+                        <pre><?php var_dump($content['post']) ?></pre>
+                    <?php } ?>
+                    <?php if (isset($content['input'])) { ?>
+                        <h3>Input</h3>
+                        <pre><?php var_dump($content['input']) ?></pre>
+                    <?php } ?>
+                    <?php if (isset($content['files'])) { ?><h3>files</h3>
+                        <pre><?php var_dump($content['files']) ?></pre><?php } ?>
+                    <?php if (isset($content['cookie'])) { ?><h3>cookie</h3>
+                        <pre><?php var_dump($content['cookie']) ?></pre><?php } ?>
+                    <?php if (isset($content['session'])) { ?><h3>session</h3>
+                        <pre><?php var_dump($content['session']) ?></pre><?php } ?>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" id="heading_meta">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse_meta" aria-controls="collapse_meta">
+                            Meta
+                        </button>
+                    </h2>
+                </div>
+                <div id="collapse_meta" class="collapse" aria-labelledby="heading_meta" data-parent="#accordion">
+                    <div class="card-body">
+                        <br>date time: <?php var_dump($content['datetime']) ?>
+                        <br>url: <?php var_dump($content['url']) ?>
+                        <br>lang: <?php var_dump($content['lang']) ?>
+                        <br>debug: <?php var_dump($content['debug']) ?>
+                        <br>env: <?php var_dump($content['env']) ?>
+                        <br>version: <?php var_dump($content['version']) ?>
+                        <br>memory_peak_usage: <?php var_dump($content['memory_peak_usage']) ?>
+                        <br>memory_usage: <?php var_dump($content['memory_usage']) ?>
+                        <br>avg: <?php var_dump($content['avg']) ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" id="heading_mvc">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse_mvc" aria-controls="collapse_mvc">
+                            MVC
+                        </button>
+                    </h2>
+                </div>
+                <div id="collapse_mvc" class="collapse" aria-labelledby="heading_mvc" data-parent="#accordion">
+                    <div class="card-body">
+                        <h3>Route</h3>
+                        <pre><?php var_dump($content['route']) ?></pre>
+                        <h3>data</h3>
+                        <pre><?php var_dump($content['data']) ?></pre>
+                    </div>
+                </div>
+            </div>
+
+            <?php if (isset($content['exception'])) { ?>
+                <div class="card">
+                    <div class="card-header" id="heading_exception">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse_exception" aria-controls="collapse_exception">
+                                Exception <span class="badge badge-secondary"><?= sizeof($content['exception']) ?></span>
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapse_exception" class="collapse" aria-labelledby="heading_exception" data-parent="#accordion">
+                        <div class="card-body">
+                            <pre><?php var_dump($content['exception']) ?></pre>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+    </div>
+
+    <?php if (!empty($handler) && ftell($handler)) { ?>
+        <a class="btn btn-primary btn-block" href="<?= c\input::getLink(['offset' => ftell($handler)]) ?>">Следующий запрос</a>
+    <?php } ?>
+<?php } else { ?>
+    <div class="alert alert-danger">Ошибка при отображении файла или ссылка устарела</div>
+<?php } ?>
