@@ -157,6 +157,17 @@ class ' . $table . ' extends c\model{
 	}
 ';
         }
+        foreach ($tableData['unique_key'] as $unique_key) {
+            if (sizeof($unique_key) != 1) continue;
+            $content .= '	/**
+	 * 
+	 * @return ' . $table . '
+	 */
+	static function find_by_' . $unique_key[0] . '_static($value){
+		return self::whereStatic(\'' . $unique_key[0] . '\', "=", $value)->first();
+	}
+';
+        }
         foreach ($tableData['data'] as $field_key => $field_val) {
             if (substr($field_key, 0, 3) == 'is_') {
                 $content .= '	/**
