@@ -237,7 +237,7 @@ function core_load(selector, act, array, object, loading, success_callback) {
         if (typeof data == "number") throw data;
       } catch (e) {
         [].forEach.call(
-          document.querySelectorAll(selector),
+          typeof selector==='string' ? document.querySelectorAll(selector): selector,
           element => (element.innerHTML = data)
         );
         if (success_callback) success_callback();
