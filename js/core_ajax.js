@@ -172,20 +172,20 @@ function core_ajax(act, array, object, loading, success_callback) {
   xhr.open("POST", location.href);
   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-  xhr.onload = function() {
-    if (xhr.status === 200) {
+  xhr.onload = function(r) {
+    if (r.target.status === 200) {
       try {
-        var data = JSON.parse(xhr.responseText);
+        var data = JSON.parse(r.target.responseText);
       } catch (e) {
         alert("Ajax format error. No actions");
-        console.log(xhr.responseText);
-        console.log(e);
+        console.log(r.target.responseText);
+        console.log('e',e);
       }
       core_ajax_process(data, object);
       if (success_callback) success_callback();
     } else {
-      console.log(xhr);
-      alert("Request error " + xhr.responseText + " " + xhr.status);
+      console.log(r.target);
+      alert("Request error " + r.target.responseText + " " + r.target.status);
     }
     if (loading) object.classList.remove("loading");
   };
@@ -229,11 +229,11 @@ function core_load(selector, act, array, object, loading, success_callback) {
   xhr.open("POST", location.href);
   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      let data = xhr.responseText;
+  xhr.onload = function(r) {
+    if (r.target.status === 200) {
+      let data = r.target.responseText;
       try {
-        data = JSON.parse(xhr.responseText);
+        data = JSON.parse(r.target.responseText);
         if (typeof data == "number") throw data;
       } catch (e) {
         [].forEach.call(
@@ -246,8 +246,8 @@ function core_load(selector, act, array, object, loading, success_callback) {
       core_ajax_process(data, object);
       if (success_callback) success_callback();
     } else {
-      console.log(xhr);
-      alert("Request error " + xhr.responseText + " " + xhr.status);
+      console.log(r.target);
+      alert("Request error " + r.target.responseText + " " + r.target.status);
     }
     if (loading) object.classList.remove("loading");
   };
