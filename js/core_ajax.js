@@ -173,6 +173,7 @@ function core_ajax(act, array, object, loading, success_callback) {
   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
   xhr.onload = function(r) {
+	if (loading) object.classList.remove("loading");
     if (r.target.status === 200) {
       try {
         var data = JSON.parse(r.target.responseText);
@@ -187,22 +188,31 @@ function core_ajax(act, array, object, loading, success_callback) {
       console.log(r.target);
       alert("Request error " + r.target.responseText + " " + r.target.status);
     }
-    if (loading) object.classList.remove("loading");
   };
   xhr.send(param(array));
 }
-function param(object) {
-  var encodedString = "";
-  for (var prop in object) {
-    if (object.hasOwnProperty(prop)) {
-      if (encodedString.length > 0) {
-        encodedString += "&";
+function param(initialObj) {
+    const reducer = (obj, parentPrefix = null) => (prev, key) => {
+      const val = obj[key];
+      key = encodeURIComponent(key);
+      const prefix = parentPrefix ? `${parentPrefix}[${key}]` : key;
+
+      if (val == null || typeof val === 'function') {
+        prev.push(`${prefix}=`);
+        return prev;
       }
-      encodedString += encodeURI(prop + "=" + object[prop]);
-    }
-  }
-  return encodedString;
-}
+
+      if (['number', 'boolean', 'string'].includes(typeof val)) {
+        prev.push(`${prefix}=${encodeURIComponent(val)}`);
+        return prev;
+      }
+
+      prev.push(Object.keys(val).reduce(reducer(val, prefix), []).join('&'));
+      return prev;
+    };
+
+    return Object.keys(initialObj).reduce(reducer(initialObj), []).join('&');
+  };
 
 /**
  *
@@ -230,6 +240,7 @@ function core_load(selector, act, array, object, loading, success_callback) {
   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
   xhr.onload = function(r) {
+	if (loading) object.classList.remove("loading");
     if (r.target.status === 200) {
       let data = r.target.responseText;
       try {
@@ -249,7 +260,6 @@ function core_load(selector, act, array, object, loading, success_callback) {
       console.log(r.target);
       alert("Request error " + r.target.responseText + " " + r.target.status);
     }
-    if (loading) object.classList.remove("loading");
   };
   xhr.send(param(array));
 }
