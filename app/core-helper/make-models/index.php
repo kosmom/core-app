@@ -56,6 +56,7 @@ foreach ($tablesData as $table => $tableData) {
             // partition match search
             foreach ($tablesData as $table2 => $tableData2) {
                 if (substr($relation, -strlen($table2) - 1) == '_' . $table2) {
+					if (isset($tablesData[$table]['relations_to_one'][$relation]))continue;
                     $tablesData[$table]['relations_to_one'][$relation] = $table2;
                 }
             }
