@@ -67,9 +67,9 @@ foreach ($tablesData as $table => $tableData) {
 }
 print_r($tablesData);
 
-function getRelationName($relation)
+function getRelationName($relation,$table=null)
 {
-    if ($relation == 'order' or $relation == 'cursor') return $relation . '_relation';
+    if ($relation == 'order' or $relation == 'cursor' or $relation==$table) return $relation . '_relation';
     return $relation;
 }
 
@@ -133,7 +133,7 @@ class ' . $table . ' extends c\model{
 	 * 
 	 * @return ' . $relation_table . '
 	 */
-	function ' . getRelationName($relation_name) . '(){
+	function ' . getRelationName($relation_name,$table) . '(){
 		return $this->relationToOne(\'' . $relation_table . '\', \'id\', \'' . $relation_name . '_id\');
 	}
 ';
