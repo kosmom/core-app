@@ -44,14 +44,14 @@
 
         <?php if (isset($content['watch'])) { ?>
             <div class="card">
-                <div class="card-header" id="heading_server">
+                <div class="card-header" id="heading_watch">
                     <h2 class="mb-0">
-                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse_server" aria-controls="collapse_server">
+                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse_watch" aria-controls="collapse_watch">
                             Watch
                         </button>
                     </h2>
                 </div>
-                <div id="collapse_server" class="collapse" aria-labelledby="heading_server" data-parent="#accordion">
+                <div id="collapse_watch" class="collapse" aria-labelledby="heading_watch" data-parent="#accordion">
                     <div class="card-body">
                         <pre><?php var_dump($content['watch']) ?></pre>
                     </div>
@@ -75,7 +75,7 @@
                         switch ($buffer[0]) {
                             case 'log':
                     ?>
-                                <div class="header_<?= $buffer[2] ?>"><?= $buffer[1] ?></div>
+	                        <div class="header_<?= $buffer[2] ?>"><?= htmlspecialchars($buffer[1]) ?></div>
                             <?php
                                 break;
                             case 'group':
