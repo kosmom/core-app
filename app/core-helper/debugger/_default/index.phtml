@@ -38,6 +38,16 @@
             $groups = 0;
             foreach ($content['debug_buffer'] as $buffer) {
                 switch ($buffer[0]) {
+					case 'table':
+								$table=new \c\table();
+								$header=array();
+								foreach ($buffer[1] as $row){
+									$header+=$row;
+								}
+								$table->header= c\datawork::keysToKeyVals($header);
+								$table->data=$buffer[1];
+								?><div style="overflow-x: auto"><?=$table->render()?></div><?php
+								break;
                     case 'log':
             ?>
                         <div class="header_<?= $buffer[2] ?>"><?= htmlspecialchars($buffer[1]) ?></div>
