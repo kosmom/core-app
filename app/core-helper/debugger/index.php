@@ -20,3 +20,5 @@ if (isset($_GET['offset'])) {
 $debugger__DIR__ = __DIR__;
 
 c\mvc::controllerPage(__DIR__);
+
+$group_counter = 0;
