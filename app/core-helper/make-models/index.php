@@ -101,7 +101,8 @@ class ' . $table . ' extends c\model{
             $content .= '	const FIELD_' . strtoupper($field_key) . '=\'' . $field_key . '\';
 ';
         }
-        if ($tableData['primary_key'][0]) $content .= '	var $primaryField=\'' . $tableData['primary_key'][0] . '\';
+        if ($tableData['primary_key'][0]) $content .= '	var $primaryField=\'' . $tableData['primary_key'][0] . '\';';
+		$content.='
 
 /* BEGIN CUSTOM CODE */' . PHP_EOL . $custom . '/* END CUSTOM CODE */' . PHP_EOL;
 
