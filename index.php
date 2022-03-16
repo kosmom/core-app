@@ -34,6 +34,8 @@ function coreExceptionHandler($ex)
     c\error::log('logs/errors-' . date('Y-m-d') . '.log', date('d.m.Y H:i:s') . ': ' . c\request::url() . ': ' . $ex->getMessage() . PHP_EOL . print_r(debug_backtrace(), true));
 }
 
+c\mvc::init(__DIR__);
+
 if (file_exists('config/env.php')) {
     include 'config/env.php';
 }
@@ -44,8 +46,6 @@ c\core::$data['include_dir'] = 'models';
 
 //c\core::$data['db']='';
 //c\core::$data['mail']='';
-
-c\mvc::init(__DIR__);
 
 do@include c\mvc::content();while (c\mvc::check());
 c\mvc::header();
