@@ -195,7 +195,8 @@ class ' . $table . ' extends c\model{
 }';
         if ($content != $source_content) {
             file_put_contents($modelFilename, $content);
-            echo "Model " . $table . ' created';
+			chmod($modelFilename,0777);
+			echo "Model " . $table . ' created';
         }
     }
     $modelFilename = c\core::$data['include_dir'] . '/hint/' . $table . '.php';
