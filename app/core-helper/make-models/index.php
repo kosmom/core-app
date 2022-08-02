@@ -271,11 +271,11 @@ class " . $table . '{
      * @return ' . $table . '_collection|' . $table . '[]
      */
     function whereHas(){}
-	**
+   /**
      * @return ' . $table . '_collection|' . $table . '[]
      */
     static function whereHasStatic(){}
-	/**
+   /**
      * @return ' . $table . '_collection|' . $table . '[]
      */
     function whereNull(){}
@@ -287,49 +287,49 @@ class " . $table . '{
      * @return ' . $table . '_collection|' . $table . '[]
      */
     static function orderStatic(){}
-    /**
+   /**
      * @return ' . $table . '_collection|' . $table . '[]
      */
     static function getStatic(){}
-	/**
+   /**
      * @return ' . $table . '
      */
     function first(){}
-	/**
+   /**
      * @return ' . $table . '
      */
     function firstOrCreate(){}
-	/**
+   /**
      * @return ' . $table . '
      */
     function firstOrFail(){}
-	/**
+   /**
      * @return ' . $table . '_collection|' . $table . '[]
      */
     function order(){}
-	/**
+   /**
      * @return ' . $table . '_collection|' . $table . '[]
      */
     function where(){}
-	/**
+   /**
      * @return ' . $table . '_collection|' . $table . '[]
      */
     function whereIn(){}
-    /**
+   /**
      * @return ' . $table . '_collection|' . $table . '[]
      */
     static function whereInStatic(){}
-	}
-	class ' . $table . '_collection extends c\collection_object{
-    /**
+}
+class ' . $table . '_collection extends c\collection_object{
+   /**
      * @return ' . $table . '
      */
     function first(){}
-    /**
+   /**
      * @return ' . $table . '
      */
     function offsetGet($offset){}
-    /**
+   /**
      * @return ' . $table . '
      */
     function current(){}
