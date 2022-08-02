@@ -196,7 +196,7 @@ class ' . $table . ' extends c\model{
         if ($content != $source_content) {
             file_put_contents($modelFilename, $content);
 			chmod($modelFilename,0777);
-			echo "Model " . $table . ' created';
+            echo "Model " . $table . ' created';
         }
     }
     $modelFilename = c\core::$data['include_dir'] . '/hint/' . $table . '.php';
@@ -270,11 +270,19 @@ class " . $table . '{
    /**
      * @return ' . $table . '_collection|' . $table . '[]
      */
-    static function whereNull(){}
+    function whereHas(){}
+	**
+     * @return ' . $table . '_collection|' . $table . '[]
+     */
+    static function whereHasStatic(){}
+	/**
+     * @return ' . $table . '_collection|' . $table . '[]
+     */
+    function whereNull(){}
    /**
      * @return ' . $table . '_collection|' . $table . '[]
      */
-    static function whereNotNull(){}
+    function whereNotNull(){}
    /**
      * @return ' . $table . '_collection|' . $table . '[]
      */
@@ -311,8 +319,8 @@ class " . $table . '{
      * @return ' . $table . '_collection|' . $table . '[]
      */
     static function whereInStatic(){}
-}
-class ' . $table . '_collection extends c\collection_object{
+	}
+	class ' . $table . '_collection extends c\collection_object{
     /**
      * @return ' . $table . '
      */
