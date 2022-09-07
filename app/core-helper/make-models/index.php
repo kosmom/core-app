@@ -292,6 +292,10 @@ class " . $table . '{
      */
     static function getStatic(){}
    /**
+     * @return ' . $table . '_collection|' . $table . '[]
+     */
+    function get(){}
+   /**
      * @return ' . $table . '
      */
     function first(){}
