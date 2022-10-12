@@ -48,18 +48,22 @@ foreach ($tablesData as $table => $tableData) {
     foreach ($tableData['data'] as $column_key => $column_val) {
         if (substr($column_key, -3) == '_id') {
             $relation = substr($column_key, 0, -3);
-            if ($tablesData[$relation]['data']['id']) {
+			if ($tablesData[$relation]['data']['id']) {
                 // relation found
                 $tablesData[$table]['relations_to_one'][$relation] = $relation;
                 $tablesData[$relation]['relations_to_many'][$table] = 'id';
             }
             // partition match search
-            foreach ($tablesData as $table2 => $tableData2) {
-                if (substr($relation, -strlen($table2) - 1) == '_' . $table2) {
-					if (isset($tablesData[$table]['relations_to_one'][$relation]))continue;
-                    $tablesData[$table]['relations_to_one'][$relation] = $table2;
-                }
-            }
+			for ($i=1;$i<strlen($relation);$i++){
+				if (substr($relation,$i-1,1)!='_')continue;
+				$subrelation=substr($relation,$i);
+				foreach ($tablesData as $table2 => $tableData2) {
+					if ($subrelation == $table2) {
+						if (isset($tablesData[$table]['relations_to_one'][$relation]))continue;
+						$tablesData[$table]['relations_to_one'][$relation] = $table2;
+					}
+				}
+			}
         } elseif (in_array($column_key, ['position', 'weight', 'order'])) {
             $tablesData[$table]['order'][] = $column_key;
         }
@@ -300,49 +304,49 @@ class " . $table . '{
      */
     function first(){}
     function delete(){}
-   /**
+    /**
      * @return ' . $table . '
      */
     function firstOrCreate(){}
-   /**
+	/**
      * @return ' . $table . '
      */
     function firstOrFail(){}
-   /**
+	/**
      * @return ' . $table . '_collection|' . $table . '[]
      */
     function order(){}
-   /**
+	/**
      * @return ' . $table . '_collection|' . $table . '[]
      */
     function where(){}
-   /**
+	/**
      * @return ' . $table . '_collection|' . $table . '[]
      */
     function whereNotIn(){}
-   /**
-     * @return ' . $table . '_collection|' . $table . '[]
-     */
-    function whereIn(){}
-   /**
-     * @return ' . $table . '_collection|' . $table . '[]
-     */
-    static function whereInStatic(){}
-   /**
-     * @return ' . $table . '_collection|' . $table . '[]
-     */
+     /**
+       * @return ' . $table . '_collection|' . $table . '[]
+       */
+      function whereIn(){}
+     /**
+       * @return ' . $table . '_collection|' . $table . '[]
+       */
+      static function whereInStatic(){}
+     /**
+       * @return ' . $table . '_collection|' . $table . '[]
+       */
     static function whereNotInStatic(){}
 }
 class ' . $table . '_collection extends c\collection_object{
-   /**
+    /**
      * @return ' . $table . '
      */
     function first(){}
-   /**
+    /**
      * @return ' . $table . '
      */
     function offsetGet($offset){}
-   /**
+    /**
      * @return ' . $table . '
      */
     function current(){}
