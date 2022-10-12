@@ -299,6 +299,7 @@ class " . $table . '{
      * @return ' . $table . '
      */
     function first(){}
+    function delete(){}
    /**
      * @return ' . $table . '
      */
@@ -318,11 +319,19 @@ class " . $table . '{
    /**
      * @return ' . $table . '_collection|' . $table . '[]
      */
+    function whereNotIn(){}
+   /**
+     * @return ' . $table . '_collection|' . $table . '[]
+     */
     function whereIn(){}
    /**
      * @return ' . $table . '_collection|' . $table . '[]
      */
     static function whereInStatic(){}
+   /**
+     * @return ' . $table . '_collection|' . $table . '[]
+     */
+    static function whereNotInStatic(){}
 }
 class ' . $table . '_collection extends c\collection_object{
    /**
