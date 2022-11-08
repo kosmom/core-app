@@ -71,8 +71,7 @@ foreach ($tablesData as $table => $tableData) {
 }
 print_r($tablesData);
 
-function getRelationName($relation,$table=null)
-{
+function getRelationName($relation,$table=null){
     if ($relation == 'order' or $relation == 'cursor' or $relation==$table) return $relation . '_relation';
     return $relation;
 }
@@ -178,7 +177,7 @@ class ' . $table . ' extends c\model{
             if (substr($field_key, 0, 3) == 'is_') {
                 $content .= '	/**
 	 * Filter is ' . substr($field_key, 3) . '
-	 * @return ' . $table . '
+	 * @return ' . $table . '|' . $table . '[]
 	 */
 	function ' . $field_key . '(){
         	if ($this->isRowMode())return (bool)$this->' . $field_key . ';
@@ -186,7 +185,7 @@ class ' . $table . ' extends c\model{
 	}
 	/**
 	 * Filter not is ' . substr($field_key, 3) . '
-	 * @return ' . $table . '
+	 * @return ' . $table . '|' . $table . '[]
 	 */
 	function not_' . $field_key . '(){
 		if ($this->isRowMode())return !(bool)$this->' . $field_key . ';
