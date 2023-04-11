@@ -7,3 +7,6 @@
 .selected{
 	background-color: yellow;
 }
+[data-toggle]{
+	cursor: pointer;
+}
