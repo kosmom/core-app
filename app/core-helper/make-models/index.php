@@ -168,7 +168,10 @@ class ' . $table . ' extends c\model{
 	 * 
 	 * @return ' . $table . '
 	 */
-	static function find_by_' . $unique_key[0] . '_static($value){
+	static function find_by_' . $unique_key[0] . '_static($value,$notFoundException=null){
+                if ($notFoundException){
+                        return self::whereStatic(\'' . $unique_key[0] . '\', "=", $value)->firstOrFail($notFoundException);
+                }
 		return self::whereStatic(\'' . $unique_key[0] . '\', "=", $value)->first();
 	}
 ';
